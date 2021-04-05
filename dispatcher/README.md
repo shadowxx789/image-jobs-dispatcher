@@ -65,4 +65,4 @@ Base docker images:
           <pre>{
             "status":"one item from of the next enumeration [RUNNING | SUCCESS | FAILED]"
           }</pre>
-      For id = 1 status = RUNNING, id = 2 status = SUCCESS, id = 3 status FAILED
+      For job id = 1 status = RUNNING, job id = 2 status = SUCCESS, job id = 3 status FAILED
