@@ -1,0 +1,77 @@
+version: '3.8'
+services:
+  worker-cloud-net:
+    build: worker-service-mock
+    image: theshamuel/worker-service-mock:1.0.0
+    hostname: worker-clound-net
+    restart: always
+    container_name: worker-clound-net
+    logging:
+      driver: json-file
+      options:
+        max-size: "3m"
+        max-file: "2"
+    healthcheck:
+      test: ["CMD-SHELL", "curl -f http://localhost:8081/ping"]
+      interval: 3s
+      timeout: 5s
+      retries: 5
+    depends_on:
+      worker-blob-net:
+        condition: service_healthy
+    networks:
+      - net
+    environment:
+      - TZ=Europe/Dublin
+      - BLOB_SERVICE_URL=http://worker-blob-net:8081/api/v1/
+
+  worker-blob-net:
+    build: blob-service-mock
+    image: theshamuel/blob-service-mock:1.0.0
+    hostname: worker-blob-net
+    restart: always
+    container_name: worker-blob-net
+    logging:
+      driver: json-file
+      options:
+        max-size: "3m"
+        max-file: "2"
+    healthcheck:
+      test: ["CMD-SHELL", "curl -f http://localhost:8080/ping"]
+      interval: 3s
+      timeout: 5s
+      retries: 5
+    networks:
+      - net
+    environment:
+      - TZ=Europe/Dublin
+
+  image-jobs-dispatcher:
+    build: dispatcher
+    image: theshamuel/image-jobs-dispatcher:1.0.0
+    hostname: image-jobs-dispatcher
+    restart: always
+    container_name: image-jobs-dispatcher
+    logging:
+      driver: json-file
+      options:
+        max-size: "3m"
+        max-file: "2"
+    ports:
+    - "9000:9000"
+    healthcheck:
+      test: ["CMD-SHELL", "curl -f http://localhost:9000/ping"]
+      interval: 3s
+      timeout: 5s
+      retries: 5
+    depends_on:
+      worker-cloud-net:
+        condition: service_healthy
+    networks:
+      - net
+    environment:
+      - TZ=Europe/Dublin
+      - WORKER_SERVICE_URL=http://worker-cloud-net:8080/api/v1/
+
+networks:
+  net:
