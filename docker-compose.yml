@@ -3,9 +3,9 @@ services:
   worker-cloud-net:
     build: worker-service-mock
     image: theshamuel/worker-service-mock:1.0.0
-    hostname: worker-clound-net
+    hostname: worker-cloud-net
     restart: always
-    container_name: worker-clound-net
+    container_name: worker-cloud-net
     logging:
       driver: json-file
       options:
