@@ -13,6 +13,7 @@ import (
 	"io/ioutil"
 	"log"
 	"net/http"
+	"os"
 	"strconv"
 	"sync"
 	"time"
@@ -58,7 +59,7 @@ type JobStatusResponse struct {
 	Status int `json:"status"`
 }
 
-type ImgID struct {
+type PayloadLocation struct {
 	PayloadLocation string `json:"payload_location"`
 }
 
@@ -68,6 +69,7 @@ var store = map[string]Job{
 	"3": {ID: "3", TenantID: 3, ClientID: 3, Status: FAILED},
 }
 
+var BlobURL string
 //Run http server
 func (r *Rest) Run() {
 	log.Printf("[INFO] run http server on port %d", 8080)
@@ -94,6 +96,10 @@ func (r *Rest) Shutdown() {
 }
 
 func (r *Rest) buildHTTPServer(port int, router http.Handler) *http.Server {
+	BlobURL = os.Getenv("BLOB_SERVICE_URL")
+	if BlobURL == "" {
+		BlobURL = "http://localhost:8081/api/v1/"
+	}
 	return &http.Server{
 		Addr:              fmt.Sprintf(":%d", port),
 		Handler:           router,
@@ -176,7 +182,7 @@ func (r *Rest) submitJob(w http.ResponseWriter, req *http.Request) {
 		return
 	}
 
-	request, err := http.NewRequest("POST", "http://localhost:8081/api/v1/blob", bytes.NewBuffer(body))
+	request, err := http.NewRequest("POST", BlobURL + "/blob", bytes.NewBuffer(body))
 	request.Header.Set("Content-Type", "image/png")
 	request.Header.Set("Content-Length", strconv.Itoa(len(body)))
 	if err != nil {
@@ -202,7 +208,7 @@ func (r *Rest) submitJob(w http.ResponseWriter, req *http.Request) {
 		return
 	}
 	defer response.Body.Close()
-	payloadLocation := &ImgID{}
+	payloadLocation := &PayloadLocation{}
 	if err = json.NewDecoder(response.Body).Decode(payloadLocation); err != nil {
 		log.Printf("[ERROR] can not decode response body %#v", err)
 		return
