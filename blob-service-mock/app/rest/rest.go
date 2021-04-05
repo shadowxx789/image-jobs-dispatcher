@@ -25,8 +25,8 @@ type Rest struct {
 	lock       sync.Mutex
 }
 
-type ImgID struct {
-	ID int `json:"img_id"`
+type PayloadLocation struct {
+	PayloadLocation string `json:"payload_location"`
 }
 
 //Run http server
@@ -103,7 +103,7 @@ func (r *Rest) routes() chi.Router {
 }
 
 func (r *Rest) submitBlob(w http.ResponseWriter, req *http.Request) {
-	jsr := ImgID{ID: 1}
+	jsr := PayloadLocation{PayloadLocation: "/images/blob/1"}
 	w.Header().Set("Content-Type", "application/json")
 	data, err := json.Marshal(jsr)
 	if err != nil {
