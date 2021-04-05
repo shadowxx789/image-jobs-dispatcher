@@ -100,7 +100,7 @@ func (r *Repeater) MakeRequest(httpMethod Method, data io.Reader) ([]byte, error
 	}
 
 	res, err = ioutil.ReadAll(response.Body)
-	if err != nil || response.StatusCode != 200 {
+	if err != nil || response.StatusCode != http.StatusOK {
 		log.Printf("[ERROR] can not read response body %#v", err)
 		if errClose := response.Body.Close(); errClose != nil {
 			log.Printf("[ERROR] can not close response body %#v", errClose)
