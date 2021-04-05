@@ -50,7 +50,7 @@ func Test_Main(t *testing.T) {
 	resp, err := http.Get(fmt.Sprintf("http://localhost:%d/ping", port))
 	require.NoError(t, err)
 	defer resp.Body.Close()
-	assert.Equal(t, 200, resp.StatusCode)
+	assert.Equal(t, http.StatusOK, resp.StatusCode)
 	body, err := ioutil.ReadAll(resp.Body)
 	assert.NoError(t, err)
 	assert.Equal(t, "pong\n", string(body))

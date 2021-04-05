@@ -108,3 +108,7 @@ func (sc *ServerCommand) bootstrapApp() (*application, error) {
 		terminated:    make(chan struct{}),
 	}, nil
 }
+
+func (a *application) Wait() {
+	<-a.terminated
+}
