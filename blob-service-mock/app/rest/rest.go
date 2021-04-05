@@ -3,6 +3,7 @@ package rest
 import (
 	"bufio"
 	"context"
+	"encoding/json"
 	"errors"
 	"fmt"
 	"github.com/didip/tollbooth/v6"
@@ -22,6 +23,10 @@ import (
 type Rest struct {
 	httpServer *http.Server
 	lock       sync.Mutex
+}
+
+type ImgID struct {
+	ID int `json:"img_id"`
 }
 
 //Run http server
@@ -98,7 +103,14 @@ func (r *Rest) routes() chi.Router {
 }
 
 func (r *Rest) submitBlob(w http.ResponseWriter, req *http.Request) {
-	if _, err := w.Write([]byte("{ \"id\":\"1\"}")); err != nil {
+	jsr := ImgID{ID: 1}
+	w.Header().Set("Content-Type", "application/json")
+	data, err := json.Marshal(jsr)
+	if err != nil {
+		SendErrorJSON(w, req, http.StatusBadRequest, err, ErrorServerInternal, "error during marshal response")
+		return
+	}
+	if _, err := w.Write(data); err != nil {
 		SendErrorJSON(w, req, http.StatusBadRequest, err, ErrorServerInternal, "error saving image to blob store")
 		return
 	}
