@@ -37,7 +37,7 @@ back-of-the-envelope calculations. The numbers came up just for example to adjus
 
 ### Improvements for productions
     1. Add more unit tests (in demo were added only minimum test that service are workable. Just demonstrate skills and PoC demo)
-    2. Do back-of-the-envelope calculations for detect KPI of service
+    2. Do proper back-of-the-envelope calculations for detect KPI of service based on real requirements
     3. Add performance tests following KPI
     4.  In case to deploy to Kubennetes cluster create helm package 
         (following from task email for demo I went with docker-compose as the simpleset way)
