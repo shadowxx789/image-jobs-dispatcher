@@ -20,7 +20,6 @@ const (
 	RUNNING = iota
 	SUCCESS
 	FAILED
-	UNKNOWN
 )
 
 func (js JobStatus) ToString() string {
