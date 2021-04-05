@@ -1,4 +1,4 @@
-## Image Jobs dispatcher
+## Image Jobs Dispatcher
 
 Service to accepting jobs to could image farm.
 
