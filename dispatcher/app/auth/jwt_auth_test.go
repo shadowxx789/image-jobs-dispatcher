@@ -1,6 +1,7 @@
 package auth
 
 import (
+	"fmt"
 	"github.com/dgrijalva/jwt-go"
 	"github.com/stretchr/testify/assert"
 	"testing"
@@ -33,6 +34,7 @@ func TestService_Parse(t *testing.T) {
 	for i, tt := range tbl {
 		claims, err := authService.Parse(tt.c)
 		if err != nil {
+			fmt.Printf("test case with error #%d\n", i)
 			assert.Error(t, err)
 			continue
 		}
