@@ -15,13 +15,13 @@ import (
 type RestAPI struct {
 	WorkerServiceURL string
 	lock             sync.Mutex
-	Client           *utils.Repeater
+	Client           utils.RepeaterInterface
 }
 
 type JobStatusResponse struct {
-	Status  int    `json:"status"`
-	Error   string `json:"error"`
-	Details string `json:"details"`
+	Status  int    `json:"status,omitempty"`
+	Error   string `json:"error,omitempty"`
+	Details string `json:"details,omitempty"`
 }
 
 type JobResponse struct {
@@ -31,7 +31,7 @@ type JobResponse struct {
 }
 
 var store = map[string]model.Job{
-	"1": {ID: "1", TenantID: 1, ClientID: 1, PayloadLocation: "/blob/api/v1/1" },
+	"1": {ID: "1", TenantID: 1, ClientID: 1, PayloadLocation: "/blob/api/v1/1"},
 	"2": {ID: "2", TenantID: 2, ClientID: 2},
 	"3": {ID: "3", TenantID: 3, ClientID: 3},
 }
@@ -43,12 +43,17 @@ func (r *RestAPI) SubmitJob(job model.Job) (*model.Job, error) {
 		log.Printf("[ERROR] can not encode response body %#v", err)
 		return nil, nil
 	}
-	r.Client = &utils.Repeater{
-		ClientTimeout: 10,
-		Attempts:      10,
-		URI:           r.WorkerServiceURL + "/job",
-		Count:         3,
+	if r.Client == nil {
+		r.Client = &utils.Repeater{
+			ClientTimeout: 10,
+			Attempts:      10,
+			URI:           r.WorkerServiceURL + "/job",
+			Count:         3,
+		}
 	}
+	defer func() {
+		r.Client = nil
+	}()
 	res, err := r.Client.MakeRequest(utils.POST, bytes.NewBuffer(body))
 	if err != nil {
 		log.Printf("[ERROR] can not make request to get status with error: %#v", err)
@@ -64,7 +69,7 @@ func (r *RestAPI) SubmitJob(job model.Job) (*model.Job, error) {
 		err := errors.New(jsr.Error)
 		return nil, errors.Wrap(err, jsr.Details)
 	}
-	r.lock.Lock()	//Workaround only for PoC do not get collision in case of parallel request
+	r.lock.Lock() //Workaround only for PoC do not get collision in case of parallel request
 	jsr.Job.ID = strconv.Itoa(len(store) + 1)
 	r.lock.Unlock()
 	jsr.Job.TenantID = job.TenantID
@@ -94,14 +99,19 @@ func (r *RestAPI) GetJob(id string) (*model.Job, error) {
 
 //GetStatusJob get job status
 func (r *RestAPI) GetStatusJob(id string) (model.JobStatus, error) {
-	r.Client = &utils.Repeater{
-		ClientTimeout: 10,
-		Attempts:      10,
-		URI:           r.WorkerServiceURL + "/job/" + id + "/status",
-		Count:         3,
+	if r.Client == nil {
+		r.Client = &utils.Repeater{
+			ClientTimeout: 10,
+			Attempts:      10,
+			URI:           r.WorkerServiceURL + "/job/" + id + "/status",
+			Count:         3,
+		}
 	}
+	defer func() {
+		r.Client = nil
+	}()
 	res, err := r.Client.MakeRequest(utils.GET, nil)
-	if err != nil {
+	if err != nil || res == nil {
 		log.Printf("[ERROR] can not make request to get status with id: %s, error: %#v", id, err)
 		return -1, err
 	}
