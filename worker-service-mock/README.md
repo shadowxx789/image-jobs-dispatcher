@@ -12,12 +12,12 @@ Base docker images:
 
 #### API v1
 
-1. Put blob `POST: /api/v1/job`
+1. Submit job `POST: /api/v1/job`
     - Request: 
         - <pre>{
             "encoding": "base64",
             "MD5":"[md5 hash of image file]",
-            "content": "[encoded image file by algorithm from encoding field]'
+            "content": "[encoded image file by algorithm from encoding field]"
           }
           </pre>
         - Ex: `curl --request POST \
@@ -32,17 +32,17 @@ Base docker images:
     - Response:
        - JSON:
          <pre>{
-           "img_id":"[image id for getting blob from object store directly or via CDN]"
-         }</pre>
+           "payload_location":"/images/blob/1" //[image id for getting blob from object store directly or via CDN]"
+         </pre>
 
-1. Get blob data `GET: /api/v1/job/{id}/status`
+1. Get job status data `GET: /api/v1/job/{id}/status`
     - Request: No Body
         - Ex: `curl --request GET \
           --url http://HOST:8081/api/v1/blob/1`
     - Response:
         - JSON:
           <pre>{
-            "status":"one item from of the next enumeration [RUNNING | SUCCESS | FAILED]"
+            "status":"one item from of the next enumeration as integer [0 | 1 | 2]"
           }</pre>
 
 ### Improvements for using in a real pipeline as contract/smoke tests
