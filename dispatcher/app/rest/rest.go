@@ -119,8 +119,9 @@ func (r *Rest) routes() chi.Router {
 
 func (r *Rest) getJobStatus(w http.ResponseWriter, req *http.Request) {
 	jobID := chi.URLParam(req, "id")
-	_, err := r.checkJWT(req.Header.Get("Authorization"), &w)
+	_, err := r.checkJWT(req.Header.Get("Authorization"))
 	if err != nil {
+		w.WriteHeader(http.StatusUnauthorized)
 		SendErrorJSON(w, req, http.StatusUnauthorized, err, ErrorMD5Validation, "JWT is invalid")
 		return
 	}
@@ -147,8 +148,9 @@ func (r *Rest) submitJob(w http.ResponseWriter, req *http.Request) {
 		SendErrorJSON(w, req, http.StatusBadRequest, err, ErrorMD5Validation, "Error during md5 validation")
 		return
 	}
-	claims, err := r.checkJWT(req.Header.Get("Authorization"), &w)
+	claims, err := r.checkJWT(req.Header.Get("Authorization"))
 	if err != nil {
+		w.WriteHeader(http.StatusUnauthorized)
 		SendErrorJSON(w, req, http.StatusUnauthorized, err, ErrorMD5Validation, "JWT is invalid")
 		return
 	}
@@ -176,10 +178,9 @@ func (r *Rest) submitJob(w http.ResponseWriter, req *http.Request) {
 	}
 }
 
-func (r *Rest) checkJWT(authHeader string, w *http.ResponseWriter) (auth.Claims, error) {
-	if authHeader == "" || len(strings.Split(authHeader, " ")) != 2 {
-		(*w).WriteHeader(http.StatusUnauthorized)
-		return auth.Claims{}, nil
+func (r *Rest) checkJWT(authHeader string) (*auth.Claims, error) {
+	if authHeader == "" || len(strings.Split(authHeader, " ")) != 3 {
+		return nil, fmt.Errorf("can't parse header: Authorisation contains an invalid number of segments")
 	}
 	headerValue := strings.Split(authHeader, " ")
 	return r.Auth.Parse(headerValue[1])
@@ -198,7 +199,7 @@ func (msg *request) checkMd5Hash() error {
 		return err
 	}
 
-	if string(hash.Sum(nil)) == msg.MD5 {
+	if fmt.Sprintf("%x", hash.Sum(nil)) != msg.MD5 {
 		return fmt.Errorf("MD5 hash sum is not valid passed: %s, calculated: %x", msg.MD5, hash.Sum(nil))
 	}
 
@@ -226,8 +227,9 @@ func base64Decode(data []byte) ([]byte, error) {
 
 func (r *Rest) getJob(w http.ResponseWriter, req *http.Request) {
 	jobID := chi.URLParam(req, "id")
-	_, err := r.checkJWT(req.Header.Get("Authorization"), &w)
+	_, err := r.checkJWT(req.Header.Get("Authorization"))
 	if err != nil {
+		w.WriteHeader(http.StatusUnauthorized)
 		SendErrorJSON(w, req, http.StatusUnauthorized, err, ErrorMD5Validation, "JWT is invalid")
 		return
 	}
