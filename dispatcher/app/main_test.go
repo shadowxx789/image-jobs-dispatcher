@@ -46,7 +46,7 @@ func Test_Main(t *testing.T) {
 		<-finished
 	}()
 
-	waitForHTTPServer(port)
+	waitHTTPServer(port)
 	resp, err := http.Get(fmt.Sprintf("http://localhost:%d/ping", port))
 	require.NoError(t, err)
 	defer resp.Body.Close()
@@ -77,7 +77,7 @@ func generateRndPort() (port int) {
 	return port
 }
 
-func waitForHTTPServer(port int) {
+func waitHTTPServer(port int) {
 	client := http.Client{Timeout: time.Second}
 	for i := 0; i < 5; i++ {
 		time.Sleep(time.Millisecond * 500)
