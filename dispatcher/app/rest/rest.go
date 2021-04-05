@@ -179,7 +179,7 @@ func (r *Rest) submitJob(w http.ResponseWriter, req *http.Request) {
 }
 
 func (r *Rest) checkJWT(authHeader string) (*auth.Claims, error) {
-	if authHeader == "" || len(strings.Split(authHeader, " ")) != 3 {
+	if authHeader == "" || len(strings.Split(authHeader, " ")) != 2 {
 		return nil, fmt.Errorf("can't parse header: Authorisation contains an invalid number of segments")
 	}
 	headerValue := strings.Split(authHeader, " ")

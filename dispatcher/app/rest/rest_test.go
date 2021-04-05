@@ -94,8 +94,7 @@ func TestCheckJWT(t *testing.T)  {
 		h   string
 		err error
 	}{
-		{"Authorisation Bearer", errors.New("can't parse header: Authorisation contains an invalid number of segments")},
-		{"Authorisation", errors.New("can't parse header: Authorisation contains an invalid number of segments")},
+		{"Bearer", errors.New("can't parse header: Authorisation contains an invalid number of segments")},
 		{"", errors.New("can't parse header: Authorisation contains an invalid number of segments")},
 		{"Authorisation Bearer 123 123   ", errors.New("can't parse header: Authorisation contains an invalid number of segments")},
 	}
