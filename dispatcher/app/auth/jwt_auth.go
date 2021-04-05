@@ -40,21 +40,21 @@ func NewService(opts Opts) *Service {
 	return &res
 }
 
-func (s *Service) Parse(tokenStr string) (Claims, error) {
+func (s *Service) Parse(tokenStr string) (*Claims, error) {
 	parser := jwt.Parser{SkipClaimsValidation: true}
 	token, err := parser.ParseWithClaims(tokenStr, &Claims{} , func(token *jwt.Token) (interface{}, error) {
 		return []byte("your-256-bit-secret"), nil
 	})
 	if err != nil {
-		return Claims{}, errors.Wrap(err, "can't parse token")
+		return &Claims{}, errors.Wrap(err, "can't parse token")
 	}
 
 	claims, ok := token.Claims.(*Claims)
 	if !ok {
-		return Claims{}, errors.New("invalid token")
+		return &Claims{}, errors.New("invalid token")
 	}
 
-	return *claims, s.validate(claims)
+	return claims, s.validate(claims)
 }
 
 func (s *Service) validate(claims *Claims) error {
