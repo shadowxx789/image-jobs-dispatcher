@@ -95,12 +95,9 @@ func (r *Repeater) MakeRequest(httpMethod Method, data io.Reader) ([]byte, error
 		}
 		return nil, err
 	}
-	if response == nil && err != nil {
-		return nil, err
-	}
 
 	res, err = ioutil.ReadAll(response.Body)
-	if err != nil || response.StatusCode != http.StatusOK {
+	if err != nil || response.StatusCode > 200 && response.StatusCode < 300 {
 		log.Printf("[ERROR] can not read response body %#v", err)
 		if errClose := response.Body.Close(); errClose != nil {
 			log.Printf("[ERROR] can not close response body %#v", errClose)
@@ -111,5 +108,6 @@ func (r *Repeater) MakeRequest(httpMethod Method, data io.Reader) ([]byte, error
 	if errClose := response.Body.Close(); errClose != nil {
 		log.Printf("[ERROR] can not close response body %#v", errClose)
 	}
+
 	return res, nil
 }
