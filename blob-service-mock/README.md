@@ -24,7 +24,7 @@ Base docker images:
    - Response:
         - JSON: 
           <pre>{
-            "id":"1"
+            "payload_location":"/images/blob/1"
           }</pre>
 
 1. Get blob data `GET: /api/v1/blob/{id}` `Headers: Content-Type: <Ther MIME content type of the blob>;Content-Length: The size of the content`
