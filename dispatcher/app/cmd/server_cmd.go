@@ -109,6 +109,6 @@ func (sc *ServerCommand) bootstrapApp() (*application, error) {
 	}, nil
 }
 
-func (a *application) Wait() {
-	<-a.terminated
+func (app *application) Wait() {
+	<-app.terminated
 }
