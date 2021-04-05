@@ -34,13 +34,13 @@ type Rest struct {
 	lock             sync.Mutex
 }
 
-type request struct {
+type inputMessage struct {
 	Encoding string `json:"encoding"`
 	MD5      string `json:"md5"`
 	Data     string `json:"content"`
 }
 
-const sizeBodyLimit = 1024 * 1024 * 3 // limit size of request body
+const sizeBodyLimit = 1024 * 1024 * 3 // limit size of inputMessage body
 
 //Run http server
 func (r *Rest) Run(port int) {
@@ -67,7 +67,7 @@ func (r *Rest) Shutdown() {
 	r.lock.Unlock()
 }
 
-//Default body size 10Mb from request.go
+//Default body size 10Mb from inputMessage.go
 func (r *Rest) buildHTTPServer(port int, router http.Handler) *http.Server {
 	return &http.Server{
 		Addr:              fmt.Sprintf(":%d", port),
@@ -139,9 +139,9 @@ func (r *Rest) getJobStatus(w http.ResponseWriter, req *http.Request) {
 }
 
 func (r *Rest) submitJob(w http.ResponseWriter, req *http.Request) {
-	msg := request{}
+	msg := inputMessage{}
 	if err := render.DecodeJSON(http.MaxBytesReader(w, req.Body, sizeBodyLimit), &msg); err != nil {
-		SendErrorJSON(w, req, http.StatusBadRequest, err, ErrorJSONUnmarshal, "can't unmarshal request message")
+		SendErrorJSON(w, req, http.StatusBadRequest, err, ErrorJSONUnmarshal, "can't unmarshal inputMessage message")
 		return
 	}
 	if err := msg.checkMd5Hash(); err != nil {
@@ -165,11 +165,11 @@ func (r *Rest) submitJob(w http.ResponseWriter, req *http.Request) {
 		return
 	}
 	w.Header().Set("Content-Type", "application/json")
+	w.WriteHeader(http.StatusCreated)
 	body, err := json.Marshal(resJob)
 	if err != nil {
 		log.Printf("[ERROR] can not encode response body %#v", err)
 		SendErrorJSON(w, req, http.StatusUnauthorized, err, ErrorMD5Validation, "error during encoding job response")
-		return
 		return
 	}
 	if _, err = w.Write(body); err != nil {
@@ -186,7 +186,7 @@ func (r *Rest) checkJWT(authHeader string) (*auth.Claims, error) {
 	return r.Auth.Parse(headerValue[1])
 }
 
-func (msg *request) checkMd5Hash() error {
+func (msg *inputMessage) checkMd5Hash() error {
 	hash := md5.New()
 	decodedData, err := decodeByAlgorithm([]byte(msg.Data), msg.Encoding)
 	if err != nil {
