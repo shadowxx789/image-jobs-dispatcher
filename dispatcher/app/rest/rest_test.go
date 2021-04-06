@@ -156,52 +156,65 @@ func TestRest_Ping(t *testing.T) {
 func TestRest_GetJobStatus(t *testing.T) {
 	ts, r, teardown := startHTTPServer()
 	defer teardown()
-	r.RemoteService = &engine.InterfaceMock{
+	engineMock := &engine.InterfaceMock{
 		GetStatusJobFunc: func(id string) (model.JobStatus, error) {
 			return model.JobStatus(1), nil
 		},
 	}
+	r.RemoteService = engineMock
 	res, code := getRequest(t, ts.URL+"/api/v1/job/1/status")
-	assert.Equal(t, "{\"status\":\"SUCCESS\"}", strings.ReplaceAll(res, " ",""))
+	assert.Equal(t, "{\"status\":\"SUCCESS\"}", strings.ReplaceAll(res, " ", ""))
 	assert.Equal(t, http.StatusOK, code)
+	if len(engineMock.GetStatusJobCalls()) != 1 {
+		t.Errorf("[ERROR] GetStatusJob was called %d times", len(engineMock.GetStatusJobCalls()))
+	}
 }
 
 func TestRest_SubmitJob(t *testing.T) {
 	ts, r, teardown := startHTTPServer()
 	defer teardown()
-	r.RemoteService = &engine.InterfaceMock{
+	engineMock := &engine.InterfaceMock{
 		SubmitJobFunc: func(job model.Job) (*model.Job, error) {
 			return &model.Job{ID: "4"}, nil
 		},
 	}
+	r.RemoteService = engineMock
 	reqBody, err := json.Marshal(inputMessage{Encoding: "base64", Data: "MQo=", MD5: "b026324c6904b2a9cb4b88d6d61c81d1"})
 	if err != nil {
 		t.Logf("[ERROR] error to marshal object inside test")
 	}
 	res, code := postRequest(t, ts.URL+"/api/v1/job", bytes.NewReader(reqBody))
-	assert.Equal(t, "{\"id\":\"4\"}", strings.ReplaceAll(res, " ",""))
+	assert.Equal(t, "{\"id\":\"4\"}", strings.ReplaceAll(res, " ", ""))
 	assert.Equal(t, http.StatusCreated, code)
+	if len(engineMock.GetJobCalls()) != 1 {
+		t.Errorf("[ERROR] SubmitJob was called %d times", len(engineMock.SubmitJobCalls()))
+	}
 }
 
 func TestRest_GetJob(t *testing.T) {
 	ts, r, teardown := startHTTPServer()
 	defer teardown()
-	r.RemoteService = &engine.InterfaceMock{
+	engineMock := &engine.InterfaceMock{
 		GetJobFunc: func(id string) (*model.Job, error) {
-			return &model.Job{ID: "3", TenantID:2, ClientID:1, PayloadLocation: "img/1"}, nil
+			return &model.Job{ID: "3", TenantID: 2, ClientID: 1, PayloadLocation: "img/1"}, nil
 		},
 		GetStatusJobFunc: func(id string) (model.JobStatus, error) {
 			return model.JobStatus(1), nil
 		},
 	}
+	r.RemoteService = engineMock
 	res, code := getRequest(t, ts.URL+"/api/v1/job/3")
-	assert.Equal(t, `{"id":"3","tenant_id":2,"client_id":1,"payload_location":"img/1"}`, strings.ReplaceAll(res, " ",""))
+	assert.Equal(t, `{"id":"3","tenant_id":2,"client_id":1,"payload_location":"img/1"}`, strings.ReplaceAll(res, " ", ""))
 	assert.Equal(t, http.StatusOK, code)
+	if len(engineMock.GetJobCalls()) != 1 && len(engineMock.GetStatusJobCalls()) != 1 {
+		t.Errorf("[ERROR] GetJob was called %d times, GetStatusJob was called %d times", len(engineMock.GetJobCalls()),
+			len(engineMock.GetStatusJobCalls()))
+	}
 }
 
 func startHTTPServer() (ts *httptest.Server, rest *Rest, gracefulTeardown func()) {
 	rest = &Rest{
-		Version:         "test",
+		Version:          "test",
 		WorkerServiceURI: "http://localhost:8888/api/v1/",
 		Auth:             auth.NewService(auth.Opts{}),
 	}
