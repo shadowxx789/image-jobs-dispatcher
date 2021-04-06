@@ -28,8 +28,8 @@ func TestDecodeByAlgorithm(t *testing.T) {
 		alg string
 		res string
 	}{
-		{"YXNkCg==", "base64", "asd\n" },
-		{"", "unknownalgo", "" },
+		{"YXNkCg==", "base64", "asd\n"},
+		{"", "unknownalgo", ""},
 	}
 	for i, tt := range tbl {
 		actual, err := decodeByAlgorithm([]byte(tt.d), tt.alg)
@@ -49,9 +49,9 @@ func TestBase64Decode(t *testing.T) {
 		alg string
 		res string
 	}{
-		{"YXNkCg==", "base64", "asd\n" },
-		{"bmV3c3RyaW5nCg==", "base64", "newstring\n" },
-		{"abracadabra", "base64", "wrongstring" },
+		{"YXNkCg==", "base64", "asd\n"},
+		{"bmV3c3RyaW5nCg==", "base64", "newstring\n"},
+		{"abracadabra", "base64", "wrongstring"},
 	}
 	for i, tt := range tbl {
 		actual, err := decodeByAlgorithm([]byte(tt.d), tt.alg)
@@ -65,7 +65,7 @@ func TestBase64Decode(t *testing.T) {
 	}
 }
 
-func TestCheckMd5Hash(t *testing.T)  {
+func TestCheckMd5Hash(t *testing.T) {
 	tbl := []struct {
 		r inputMessage
 	}{
@@ -79,7 +79,7 @@ func TestCheckMd5Hash(t *testing.T)  {
 	}
 }
 
-func TestCheckMd5HashErrors(t *testing.T)  {
+func TestCheckMd5HashErrors(t *testing.T) {
 	tbl := []struct {
 		r   inputMessage
 		err error
@@ -92,7 +92,7 @@ func TestCheckMd5HashErrors(t *testing.T)  {
 	}
 }
 
-func TestCheckJWT(t *testing.T)  {
+func TestCheckJWT(t *testing.T) {
 	_, rest, teardown := startHTTPServer()
 	defer teardown()
 	tbl := []struct {
