@@ -39,10 +39,10 @@ back-of-the-envelope calculations. The numbers came up just for example to adjus
 1. Add more unit tests (in demo were added only minimum test that service are workable. Just demonstrate skills and PoC demo)
 1. Do proper back-of-the-envelope calculations for detect KPI of service based on real requirements
 1. Add performance tests following KPI
-1.  In case to deploy to Kubennetes cluster create helm package 
-        (following from task email for demo I went with docker-compose as the simpleset way)
+1.  In case to deploy to Kubernetes cluster create helm package 
+        (following from task email for demo I went with docker-compose as the simplest way)
 1. Add supporting TLS for web server
-1. Bring persistence store for image jobs dispatcher service for storing jobs info st
+1. Bring persistence store for image jobs dispatcher service for storing jobs details
 1. Adjust System Design by requirements (add/remove memory cache and DB replicas)
 1. Following but pod container resources limits adjust http request processing parameters: 
    - body size
@@ -51,14 +51,14 @@ back-of-the-envelope calculations. The numbers came up just for example to adjus
 
 ### Assumptions in this PoC (keep is simple as possible for demo)
 1. Not using CDN and Cache level
-1. Instead of using DB for Image Jobs Dispatcher service save jobs to memmory
+1. Instead of using DB for Image Jobs Dispatcher service save jobs to memory
 1. 'worker.blob.net' response static replies and only one MIME type 'image/png'
-1. worker.cloud.net and worker.blob.net are AP (A - availability, P - partition tollerance) disctributed system 
+1. worker.cloud.net and worker.blob.net are AP (A - availability, P - partition tolerance) distributed system 
         in terms of CAP teoreme and I presume that are available always
 1. For minor network problems for request to worker.cloud.net and worker.blob.net were using only retry pattern following item 1
 1. There are no unit tests for stubs
 
 ### Links
-1. https://app.diagrams.net/ - was used for building Systme Design Diagram
+1. https://app.diagrams.net/ - was used for building System Design Diagram
 2. Skeleton/templates of go project was used from exiting way in my own repo [Medregistry API v2.0](https://github.com/theshamuel/medregistry20).
         This project is in progress status.
