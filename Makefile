@@ -7,8 +7,8 @@ imagever:
 			docker build -t theshamuel/image-jobs-dispatcher:1.0.0 dispatcher
 
 imagedev:
-			docker build -t theshamuel/worker-service-mock:1.0.0 --build-arg SKIP_TESTS=true blob-service-mock
-			docker build -t theshamuel/blob-service-mock:1.0.0 --build-arg SKIP_TESTS=true worker-service-mock
+			docker build -t theshamuel/worker-service-mock:1.0.0 --build-arg SKIP_TESTS=true worker-service-mock
+			docker build -t theshamuel/blob-service-mock:1.0.0 --build-arg SKIP_TESTS=true blob-service-mock
 			docker build -t theshamuel/image-jobs-dispatcher:1.0.0 --build-arg SKIP_TESTS=true dispatcher
 
 deploy:
