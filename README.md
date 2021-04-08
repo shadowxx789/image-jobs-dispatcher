@@ -54,7 +54,7 @@ back-of-the-envelope calculations. The numbers came up just for example to adjus
 1. Instead of using DB for Image Jobs Dispatcher service save jobs to memory
 1. 'worker.blob.net' response static replies and only one MIME type 'image/png'
 1. worker.cloud.net and worker.blob.net are AP (A - availability, P - partition tolerance) distributed system 
-        in terms of CAP teoreme and I presume that are available always
+        in terms of CAP theorem, and I presume that are available always
 1. For minor network problems for request to worker.cloud.net and worker.blob.net were using only retry pattern following item 1
 1. There are no unit tests for stubs
 
