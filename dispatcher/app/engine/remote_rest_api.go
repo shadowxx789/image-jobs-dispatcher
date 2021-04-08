@@ -71,10 +71,10 @@ func (r *RestAPI) SubmitJob(job model.Job) (*model.Job, error) {
 	}
 	r.lock.Lock() //Workaround only for PoC do not get collision in case of parallel request
 	jsr.Job.ID = strconv.Itoa(len(store) + 1)
-	r.lock.Unlock()
 	jsr.Job.TenantID = job.TenantID
 	jsr.Job.ClientID = job.ClientID
 	store[jsr.Job.ID] = jsr.Job
+	r.lock.Unlock()
 	return &model.Job{ID: jsr.ID}, nil
 }
 
