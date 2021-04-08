@@ -25,7 +25,7 @@ back-of-the-envelope calculations. The numbers came up just for example to adjus
     Calculations:
         - Size per request: There was set up ~3Mb by default max body size
         - Size traffic per month: ~860TB content per month for write
-        - SIze on read 3Mb per transaction * 1 billion read request per month
+        - Size on read 3Mb per transaction * 1 billion read request per month
         2.8Pb per month ~33,6Pb Max object storage size annual
 
     Assumptions:
