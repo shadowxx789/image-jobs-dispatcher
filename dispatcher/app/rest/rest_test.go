@@ -121,7 +121,7 @@ func TestRest_Shutdown(t *testing.T) {
 
 	st := time.Now()
 	srv.Run(8888)
-	assert.True(t, time.Since(st).Seconds() < 1, "should take about 100ms")
+	assert.True(t, time.Since(st).Seconds() < 1, "should take about 1s")
 	<-done
 }
 
