@@ -89,6 +89,7 @@ func (r *Repeater) MakeRequest(httpMethod Method, data io.Reader) ([]byte, error
 				}
 				break
 			case <-cancel:
+				ticker.Stop()
 				log.Printf("[WARN] completed repeater call. API is not reachible")
 				break
 			}
