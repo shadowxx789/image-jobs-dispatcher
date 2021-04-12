@@ -26,7 +26,6 @@ type EngineGroup struct {
 
 type RestAPIGroup struct {
 	WorkerServerURL string `long:"workerServiceAPI" env:"WORKER_SERVICE_API" description:"Remote worker service api url"`
-	BlobServerURL   string `long:"blobServiceAPI" env:"BLOB_SERVICE_API" description:"Remote blob service api url"`
 }
 
 type application struct {

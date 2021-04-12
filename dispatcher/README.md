@@ -45,7 +45,7 @@ Base docker images:
    job `GET: /api/v1/job/{id}`
     - Request: No Body
         - Ex: `curl --request GET \
-          --url http://localhost:8081/api/v1/blob/1`
+          --url http://localhost:8081/api/v1/job/1`
     - Response:
         <pre>
         {
