@@ -59,7 +59,7 @@ Base docker images:
 1. Get job status `GET: /api/v1/job/{id}/status`
     - Request: No Body
         - Ex: `curl --request GET \
-          --url http://HOST:8081/api/v1/blob/1`
+          --url http://HOST:8081/api/v1/job/1/status`
     - Response:
         - JSON:
           <pre>{
