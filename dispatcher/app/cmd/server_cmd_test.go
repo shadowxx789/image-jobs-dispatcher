@@ -44,17 +44,6 @@ func createAppFromCmd(t *testing.T, cmd ServerCommand) (*application, context.Co
 	return app, ctx, cancel
 }
 
-func generateRndPort() (port int) {
-	for i := 0; i < 10; i++ {
-		port = 40000 + int(rand.Int31n(10000))
-		if ln, err := net.Listen("tcp", fmt.Sprintf(":%d", port)); err == nil {
-			_ = ln.Close()
-			break
-		}
-	}
-	return port
-}
-
 func waitHTTPServer(port int) {
 	for i := 0; i < 10; i++ {
 		time.Sleep(time.Second * 1)
