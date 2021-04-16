@@ -46,7 +46,7 @@ func (s *Service) Parse(tokenStr string) (*Claims, error) {
 		return []byte("your-256-bit-secret"), nil
 	})
 	if err != nil {
-		return &Claims{}, errors.Wrap(err, "can't parse token")
+		return nil, errors.Wrap(err, "can't parse token")
 	}
 
 	claims, ok := token.Claims.(*Claims)
