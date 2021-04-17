@@ -23,7 +23,7 @@ services:
       - net
     environment:
       - TZ=Europe/Dublin
-      - BLOB_SERVICE_URL=http://worker-blob-net:8081/api/v1/
+      - BLOB_SERVICE_URL=http://worker-blob-net:8081/api/v1
 
   worker-blob-net:
     build: blob-service-mock
