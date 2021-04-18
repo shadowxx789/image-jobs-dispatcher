@@ -186,7 +186,7 @@ func TestRest_SubmitJob(t *testing.T) {
 	res, code := postRequest(t, ts.URL+"/api/v1/job", bytes.NewReader(reqBody))
 	assert.Equal(t, "{\"id\":\"4\"}", strings.ReplaceAll(res, " ", ""))
 	assert.Equal(t, http.StatusCreated, code)
-	if len(engineMock.GetJobCalls()) != 1 {
+	if len(engineMock.SubmitJobCalls()) != 1 {
 		t.Errorf("[ERROR] SubmitJob was called %d times", len(engineMock.SubmitJobCalls()))
 	}
 }
